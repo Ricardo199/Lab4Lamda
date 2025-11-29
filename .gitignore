@@ -26,6 +26,11 @@ packages/
 # Logs
 *.log
 
+# Environment variables and secrets
+.env
+.env.local
+*.env
+
 # OS files
 .DS_Store
 Thumbs.db

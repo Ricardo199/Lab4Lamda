@@ -93,17 +93,25 @@ Optional next steps (not required):
 
 4. Lambda for Labels (simple)
 
-- Status: not-started
-- What to do (quick path):
-  1. Create a Lambda function in the Console using the `.NET 8` runtime (or use your local packaging flow).
-  2. Add a trigger: S3 → ObjectCreated events for your images bucket.
-  3. Minimal handler behavior: read S3 event (bucket/key), call Rekognition DetectLabels, filter by confidence (≥75%), build a JSON item and PutItem into DynamoDB.
-  4. Test by uploading an image and checking CloudWatch logs.
+- Status: completed
+- What was done:
+  - Created Lambda project at `src/ImageProcessingLambda`
+  - Implemented `Function.cs` with FunctionHandler that:
+    - Parses S3Event to get bucket and key
+    - Downloads image from S3
+    - Calls Rekognition DetectLabels with 90% confidence threshold
+    - Filters labels >= 90% confidence
+    - Generates 150px thumbnail using ImageSharp
+    - Uploads thumbnail to `thumbnails/` prefix in S3
+    - Writes complete metadata to DynamoDB `ImageMetadataTable`
+  - Added all required NuGet packages (AWS SDK, Lambda, ImageSharp)
+  - Referenced models project for Image class
+- Next: Package and deploy to AWS
 
 5. Thumbnail (simpler option)
 
-- Status: not-started
-- What to do: For simplicity, implement thumbnail creation inside the same Lambda after Rekognition runs. Resize to 150px (preserve aspect ratio) and `PutObject` into `thumbnails/` prefix in same bucket. Record `ThumbnailUrl` in DynamoDB item.
+- Status: completed (integrated into Lambda function)
+- Notes: Thumbnail generation implemented in same Lambda handler using ImageSharp library. Resizes to 150px max dimension, preserves aspect ratio, saves as JPEG to `thumbnails/thumb-{filename}` prefix.
 
 6. Minimal IAM Role (Console)
 
@@ -140,13 +148,17 @@ Optional next steps (not required):
 
 - Status: not-started
 - What to do: Zip the project source, `PROJECT_TRACKER_Lab4.md`, README, and demo video into `studentID(lastname)_Lab#4.zip` and submit.
-
----
-
-## Suggested order of work (next actionable steps)
-1. Create DynamoDB table in the AWS Console and record name/ARN here.
-2. Update `models/Image.cs` to expose public properties matching the data model.
-3. Implement and test the S3-triggered label-detection Lambda locally or in AWS (use sample images).
+Short-term checklist (first work session)
+- [x] Create DynamoDB table and record details.
+- [x] Update `models/Image.cs` with public properties.
+- [x] Create S3 bucket `amzn-s3-images-lab-4-bucket`.
+- [x] Create folder structure and placeholder docs (`docs/plan.md`, `docs/commands.txt`, `infra/template.yaml`, etc.).
+- [x] Implement Lambda handler for label detection and thumbnail generation.
+- [ ] Package Lambda function as deployment artifact.
+- [ ] Create IAM role for Lambda execution.
+- [ ] Deploy Lambda function to AWS.
+- [ ] Configure S3 trigger on Lambda.
+- [ ] Test end-to-end with sample image.ion Lambda locally or in AWS (use sample images).
 
 Short-term checklist (first work session)
 - [x] Create DynamoDB table and record details.
