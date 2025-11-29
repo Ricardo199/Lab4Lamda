@@ -64,7 +64,6 @@ This tracker maps the lab rubric to concrete tasks, acceptance criteria, and sug
 - Notes: I created `tools/serialize-test` to run the test; you can delete this folder when you confirm you no longer need it.
 
 3. Update `models/Image.cs`
-3. Update `models/Image.cs`
 
 Status: completed
 Current review: The current `Image.cs` at `301397870(ricardo)_Lab#4/models/Image.cs` matches the data model and exposes these public properties:
@@ -87,7 +86,7 @@ Acceptance criteria (met):
 
 Optional next steps (not required):
   - Add `[DynamoDBTable("ImageMetadataTable")]` and `[DynamoDBHashKey]` attributes if you plan to use `DynamoDBContext` directly.
-- Acceptance criteria (met): `models/Image.cs` exposes public properties and can be serialized to JSON and written to DynamoDB. If you make optional improvements, update this tracker to reflect them.
+  
 
 4. Lambda for Labels (simple)
 
@@ -147,8 +146,9 @@ Optional next steps (not required):
 3. Implement and test the S3-triggered label-detection Lambda locally or in AWS (use sample images).
 
 Short-term checklist (first work session)
-- [ ] Create DynamoDB table and record details.
-- [ ] Update `models/Image.cs` with public properties.
+Short-term checklist (first work session)
+- [x] Create DynamoDB table and record details.
+- [x] Update `models/Image.cs` with public properties.
 - [ ] Plan IAM role for label-detection Lambda.
 
 ---
