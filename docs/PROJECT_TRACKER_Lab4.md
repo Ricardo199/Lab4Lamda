@@ -106,7 +106,11 @@ Optional next steps (not required):
     - Writes complete metadata to DynamoDB `ImageMetadataTable`
   - Added all required NuGet packages (AWS SDK, Lambda, ImageSharp)
   - Referenced models project for Image class
-- Next: Package and deploy to AWS
+  - Successfully packaged Lambda to `artifacts/lambda.zip` (ready for deployment)
+- Acceptance criteria (met):
+  - Lambda builds without errors
+  - Package created: `artifacts/lambda.zip`
+  - Handler signature correct: `ImageProcessingLambda::ImageProcessingLambda.Function::FunctionHandler`
 
 5. Thumbnail (simpler option)
 
@@ -116,13 +120,36 @@ Optional next steps (not required):
 6. Minimal IAM Role (Console)
 
 - Status: completed
-- What was done: Created IAM policy document in `infra/iam-policy.json` with minimal permissions for Lambda execution
+- What was done: 
+  - Created IAM policy document in `infra/iam-policy.json` with minimal permissions
+  - Created complete SAM template in `infra/template.yaml` with IAM role definition
 - Permissions included:
   - `rekognition:DetectLabels`
   - `s3:GetObject`, `s3:PutObject` on bucket `amzn-s3-images-lab-4-bucket`
   - `dynamodb:PutItem`, `dynamodb:UpdateItem` on table `ImageMetadataTable`
   - CloudWatch Logs permissions
-- Next: Create role in AWS Console or deploy via SAM template
+- Next: Deploy using Console or SAM CLI
+
+7. Deploy Lambda and Configure Trigger
+
+- Status: not-started
+- What to do (choose one method):
+  
+  **Method A: AWS Console (Recommended for demo)**
+  1. Create IAM Role `Lab4LambdaExecutionRole` using `infra/iam-policy.json`
+  2. Create Lambda function `ImageProcessingFunction` (.NET 8 runtime)
+  3. Upload `artifacts/lambda.zip`
+  4. Set handler: `ImageProcessingLambda::ImageProcessingLambda.Function::FunctionHandler`
+  5. Add environment variables: IMAGE_TABLE, CONF_THRESHOLD, THUMB_PREFIX
+  6. Set timeout: 60s, memory: 512MB
+  7. Add S3 trigger for bucket `amzn-s3-images-lab-4-bucket`
+  
+  **Method B: SAM Deploy**
+  ```bash
+  cd infra
+  sam build
+  sam deploy --guided
+  ```
 
 7. (Optional) Skip Step Functions for now
 
@@ -156,12 +183,14 @@ Short-term checklist (first work session)
 - [x] Implement Lambda handler for label detection and thumbnail generation.
 - [x] Create IAM policy document (`infra/iam-policy.json`).
 - [x] Create SAM template for deployment (`infra/template.yaml`).
-- [ ] Package Lambda function as deployment artifact.
-- [ ] Deploy to AWS (SAM or Console).
+- [x] Package Lambda function (`artifacts/lambda.zip` created successfully).
+- [ ] Deploy Lambda to AWS (Console or SAM).
+- [ ] Configure S3 trigger on Lambda.
 - [ ] Test end-to-end with sample image.
-- [ ] Collect artifacts (logs, screenshots, JSON samples).
-- [ ] Record demo video.
-- [ ] Prepare submission ZIP.
+- [ ] Collect artifacts (CloudWatch logs, DynamoDB item screenshot, thumbnail screenshot).
+- [ ] Record demo video (≤10 minutes).
+- [ ] Capture account deletion screenshot.
+- [ ] Prepare submission ZIP: `301397870(Burgos)_Lab#4.zip`.
 - Status: not-started
 - What to do: Zip the project source, `PROJECT_TRACKER_Lab4.md`, README, and demo video into `301397870(Burgos)_Lab#4.zip` and submit.
 Short-term checklist (first work session)
