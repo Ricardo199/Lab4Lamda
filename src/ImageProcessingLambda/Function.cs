@@ -15,9 +15,10 @@ namespace ImageProcessingLambda
 {
     public class Function
     {
-        private IAmazonS3 S3Client { get; set; } = new AmazonS3Client();
-        private IAmazonRekognition RekognitionClient { get; set; } = new AmazonRekognitionClient();
-        private IAmazonDynamoDB DynamoDbClient { get; set; } = new AmazonDynamoDBClient();
+        private readonly IAmazonS3 S3Client = new AmazonS3Client();
+        private readonly AmazonRekognitionClient RekognitionClient = new AmazonRekognitionClient();
+        private readonly AmazonDynamoDBClient DynamoDbClient = new AmazonDynamoDBClient();
+
         private readonly string IMAGE_TABLE = Environment.GetEnvironmentVariable("IMAGE_TABLE") ?? "ImageMetadataTable";
         private readonly string CONF_THRESHOLD = Environment.GetEnvironmentVariable("CONF_THRESHOLD") ?? "90";
         private readonly string THUMB_PREFIX = Environment.GetEnvironmentVariable("THUMB_PREFIX") ?? "thumb-";
@@ -26,24 +27,27 @@ namespace ImageProcessingLambda
         {
             try
             {
-                var image = new Image
-                {
-                    ImageId = Guid.NewGuid().ToString(),
-                    S3Bucket = evnt.Records[0].S3.Bucket.Name,
-                    S3Key = evnt.Records[0].S3.Object.Key,
-                    UploadTimestamp = DateTime.UtcNow.ToString("o")
-                };
-                
-                context.Logger.LogLine($"Processing image {image.S3Key} from bucket {image.S3Bucket}");
-                
+                var image = new _301397870_ricardo_Lab4.models.Image();
+                image.S3Bucket = evnt.Records[0].S3.Bucket.Name;
+                image.S3Key = evnt.Records[0].S3.Object.Key;
+                image.ImageId = Guid.NewGuid().ToString();
+                image.UploadTimestamp = DateTime.UtcNow.ToString("o");
+                image.ObjectUrl = $"s3://{image.S3Bucket}/{image.S3Key}";
+
+                context.Logger.LogLine($"Processing image: {image.S3Key}");
+
+                // Download image from S3
+                var getObjectResponse = await S3Client.GetObjectAsync(image.S3Bucket, image.S3Key);
                 byte[] imageBytes;
-                using (var response = await S3Client.GetObjectAsync(image.S3Bucket, image.S3Key))
                 using (var memoryStream = new MemoryStream())
                 {
-                    await response.ResponseStream.CopyToAsync(memoryStream);
+                    await getObjectResponse.ResponseStream.CopyToAsync(memoryStream);
                     imageBytes = memoryStream.ToArray();
                 }
-                
+
+                context.Logger.LogLine($"Downloaded {imageBytes.Length} bytes");
+
+                // Detect labels using Rekognition
                 var detectRequest = new DetectLabelsRequest
                 {
                     Image = new Amazon.Rekognition.Model.Image
@@ -54,16 +58,19 @@ namespace ImageProcessingLambda
                 };
 
                 var detectResponse = await RekognitionClient.DetectLabelsAsync(detectRequest);
-                context.Logger.LogLine($"Detected {detectResponse.Labels.Count} labels for image {image.S3Key}");
+                context.Logger.LogLine($"Detected {detectResponse.Labels.Count} labels");
 
+                // Filter and store labels
                 image.DetectedLabels = detectResponse.Labels
                     .Where(l => l.Confidence >= float.Parse(CONF_THRESHOLD))
-                    .Select(l => new Image.Label
+                    .Select(l => new _301397870_ricardo_Lab4.models.Image.Label
                     {
                         Name = l.Name,
-                        Confidence = l.Confidence
-                    }).ToList();
+                        Confidence = (double)(l.Confidence ?? 0)  
+                    })
+                    .ToList();
 
+                // Generate thumbnail
                 using (var imageStream = new MemoryStream(imageBytes))
                 using (var img = await SixLabors.ImageSharp.Image.LoadAsync(imageStream))
                 {
@@ -78,6 +85,7 @@ namespace ImageProcessingLambda
                         await img.SaveAsJpegAsync(thumbnailStream);
                         thumbnailStream.Position = 0;
 
+                        // Upload thumbnail
                         var thumbKey = $"thumbnails/{THUMB_PREFIX}{Path.GetFileName(image.S3Key)}";
                         await S3Client.PutObjectAsync(new Amazon.S3.Model.PutObjectRequest
                         {
@@ -87,12 +95,11 @@ namespace ImageProcessingLambda
                         });
 
                         image.ThumbNailUrl = $"s3://{image.S3Bucket}/{thumbKey}";
-                        context.Logger.LogLine($"Thumbnail saved to {image.ThumbNailUrl}");
+                        context.Logger.LogLine($"Uploaded thumbnail to {thumbKey}");
                     }
                 }
 
-                image.ObjectUrl = $"s3://{image.S3Bucket}/{image.S3Key}";
-
+                // Write to DynamoDB
                 var item = new Dictionary<string, AttributeValue>
                 {
                     ["ImageId"] = new AttributeValue { S = image.ImageId },
@@ -124,7 +131,7 @@ namespace ImageProcessingLambda
             }
             catch (Exception ex)
             {
-                context.Logger.LogLine($"Error processing image: {ex.Message}");
+                context.Logger.LogLine($"Error: {ex.Message}");
                 context.Logger.LogLine($"Stack trace: {ex.StackTrace}");
                 throw;
             }

@@ -120,7 +120,7 @@ aws s3 cp sample.jpg s3://your-images-bucket/path/sample.jpg
   - `src/` (source), `PROJECT_TRACKER_Lab4.md`, `README.md`, `infra/` (if present), `docs/`, `LICENSE`.
 
 ```bash
-zip -r 301397870(ricardo)_Lab#4.zip src README.md PROJECT_TRACKER_Lab4.md infra docs LICENSE
+zip -r 301397870(Burgos)_Lab#4.zip src README.md PROJECT_TRACKER_Lab4.md infra docs LICENSE
 ```
 
 14) Optional: small CI check

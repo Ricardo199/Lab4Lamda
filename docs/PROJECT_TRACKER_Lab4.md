@@ -163,7 +163,7 @@ Short-term checklist (first work session)
 - [ ] Record demo video.
 - [ ] Prepare submission ZIP.
 - Status: not-started
-- What to do: Zip the project source, `PROJECT_TRACKER_Lab4.md`, README, and demo video into `studentID(lastname)_Lab#4.zip` and submit.
+- What to do: Zip the project source, `PROJECT_TRACKER_Lab4.md`, README, and demo video into `301397870(Burgos)_Lab#4.zip` and submit.
 Short-term checklist (first work session)
 - [x] Create DynamoDB table and record details.
 - [x] Update `models/Image.cs` with public properties.
