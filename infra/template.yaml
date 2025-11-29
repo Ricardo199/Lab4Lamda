@@ -1,19 +1,139 @@
-# SAM/CloudFormation Template for Lab 4
-# Use: sam build && sam deploy --guided
-
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 Description: Lab 4 - Image Label Detection and Thumbnail Generation
 
 Parameters:
-  # Add parameters like ConfidenceThreshold, TableName, etc.
+  ConfidenceThreshold:
+    Type: String
+    Default: "90"
+    Description: Minimum confidence threshold for label detection
+  
+  ThumbnailPrefix:
+    Type: String
+    Default: thumbnails/
+    Description: S3 prefix for thumbnail images
+  
+  ImageTableName:
+    Type: String
+    Default: ImageMetadataTable
+    Description: DynamoDB table name for image metadata
 
 Resources:
-  # S3 Bucket
-  # DynamoDB Table (ImageMetadataTable)
-  # Lambda Function(s)
-  # IAM Role(s)
-  # Step Functions State Machine (optional)
+  # S3 Bucket for images and thumbnails
+  ImageBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: amzn-s3-images-lab-4-bucket
+      NotificationConfiguration:
+        LambdaConfigurations:
+          - Event: s3:ObjectCreated:*
+            Function: !GetAtt ImageProcessingFunction.Arn
+            Filter:
+              S3Key:
+                Rules:
+                  - Name: prefix
+                    Value: ""
+                  - Name: suffix
+                    Value: ""
+
+  # DynamoDB Table for image metadata
+  ImageMetadataTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Ref ImageTableName
+      AttributeDefinitions:
+        - AttributeName: ImageId
+          AttributeType: S
+      KeySchema:
+        - AttributeName: ImageId
+          KeyType: HASH
+      BillingMode: PAY_PER_REQUEST
+
+  # Lambda Execution Role
+  LambdaExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: Lab4LambdaExecutionRole
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      Policies:
+        - PolicyName: Lab4LambdaPolicy
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - rekognition:DetectLabels
+                Resource: '*'
+              - Effect: Allow
+                Action:
+                  - s3:GetObject
+                  - s3:PutObject
+                Resource: !Sub '${ImageBucket.Arn}/*'
+              - Effect: Allow
+                Action:
+                  - dynamodb:PutItem
+                  - dynamodb:UpdateItem
+                Resource: !GetAtt ImageMetadataTable.Arn
+              - Effect: Allow
+                Action:
+                  - logs:CreateLogGroup
+                  - logs:CreateLogStream
+                  - logs:PutLogEvents
+                Resource: !Sub 'arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/*'
+
+  # Lambda Function for Image Processing
+  ImageProcessingFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: ImageProcessingFunction
+      Handler: ImageProcessingLambda::ImageProcessingLambda.Function::FunctionHandler
+      Runtime: dotnet8
+      CodeUri: ../src/ImageProcessingLambda/
+      MemorySize: 512
+      Timeout: 60
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Environment:
+        Variables:
+          IMAGE_TABLE: !Ref ImageTableName
+          CONF_THRESHOLD: !Ref ConfidenceThreshold
+          THUMB_PREFIX: !Ref ThumbnailPrefix
+
+  # Permission for S3 to invoke Lambda
+  S3InvokeLambdaPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !Ref ImageProcessingFunction
+      Action: lambda:InvokeFunction
+      Principal: s3.amazonaws.com
+      SourceArn: !GetAtt ImageBucket.Arn
 
 Outputs:
-  # Bucket name, table name, Lambda ARN, etc.
+  BucketName:
+    Description: S3 Bucket for images
+    Value: !Ref ImageBucket
+    Export:
+      Name: !Sub '${AWS::StackName}-BucketName'
+  
+  TableName:
+    Description: DynamoDB table for image metadata
+    Value: !Ref ImageMetadataTable
+    Export:
+      Name: !Sub '${AWS::StackName}-TableName'
+  
+  LambdaFunctionArn:
+    Description: Lambda function ARN
+    Value: !GetAtt ImageProcessingFunction.Arn
+    Export:
+      Name: !Sub '${AWS::StackName}-LambdaArn'
+  
+  LambdaRoleArn:
+    Description: Lambda execution role ARN
+    Value: !GetAtt LambdaExecutionRole.Arn
+    Export:
+      Name: !Sub '${AWS::StackName}-RoleArn'

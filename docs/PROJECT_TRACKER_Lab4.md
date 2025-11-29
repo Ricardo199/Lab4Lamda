@@ -115,37 +115,53 @@ Optional next steps (not required):
 
 6. Minimal IAM Role (Console)
 
-- Status: not-started
-- What to do: Create one IAM role via Console and attach inline policy that allows:
-  - `s3:GetObject`, `s3:PutObject` on your buckets
+- Status: completed
+- What was done: Created IAM policy document in `infra/iam-policy.json` with minimal permissions for Lambda execution
+- Permissions included:
   - `rekognition:DetectLabels`
-  - `dynamodb:PutItem` on your table
-  - `logs:CreateLogGroup`/`logs:CreateLogStream`/`logs:PutLogEvents`
+  - `s3:GetObject`, `s3:PutObject` on bucket `amzn-s3-images-lab-4-bucket`
+  - `dynamodb:PutItem`, `dynamodb:UpdateItem` on table `ImageMetadataTable`
+  - CloudWatch Logs permissions
+- Next: Create role in AWS Console or deploy via SAM template
 
 7. (Optional) Skip Step Functions for now
 
 - Status: not-started
-- Note: Only add Step Functions if you finish the basics and want extra credit. The lab accepts using Lambda + S3 triggers.
-
 8. Test End-to-End
 
 - Status: not-started
-- What to do: Upload a sample image, confirm:
-  - Lambda executed (CloudWatch)
-  - DynamoDB item created with `DetectedLabels`
-  - Thumbnail present under `thumbnails/` prefix
+- What to do: 
+  1. Package Lambda: `dotnet lambda package --output-package artifacts/lambda.zip`
+  2. Deploy using SAM (`sam build && sam deploy --guided`) OR manually via Console
+  3. Upload a sample image to S3 bucket
+  4. Confirm Lambda executed (CloudWatch Logs)
+  5. Verify DynamoDB item created with `DetectedLabels` (confidence >= 90%)
+  6. Verify thumbnail present under `thumbnails/` prefix in S3
+  7. Save all artifacts (logs, screenshots, JSON samples) to `docs/`
 
 9. Prepare Demo and Screenshots
 
 - Status: not-started
-- What to do: Record a ≤10-minute video with your camera on showing:
-  - AWS Console with account ID visible
-  - Uploading an image (or showing recent upload) and DynamoDB item + thumbnail
-  - Do not explain code; just demonstrate the features
-  - Take screenshot showing AWS account deletion confirmation when ready
-
-10. ZIP Submission
-
+- What to do: 
+  - Record a ≤10-minute video following `docs/demo-script.txt`
+  - Show: AWS Console with account ID visible, camera on
+  - Demonstrate: Upload image → DynamoDB item with labels → thumbnail in S3
+  - Capture screenshots: DynamoDB item, CloudWatch logs, thumbnail in S3, account deletion confirmation
+  - Save all to `docs/screenshots/`
+Short-term checklist (first work session)
+- [x] Create DynamoDB table and record details.
+- [x] Update `models/Image.cs` with public properties.
+- [x] Create S3 bucket `amzn-s3-images-lab-4-bucket`.
+- [x] Create folder structure and placeholder docs (`docs/plan.md`, `docs/commands.txt`, `infra/template.yaml`, etc.).
+- [x] Implement Lambda handler for label detection and thumbnail generation.
+- [x] Create IAM policy document (`infra/iam-policy.json`).
+- [x] Create SAM template for deployment (`infra/template.yaml`).
+- [ ] Package Lambda function as deployment artifact.
+- [ ] Deploy to AWS (SAM or Console).
+- [ ] Test end-to-end with sample image.
+- [ ] Collect artifacts (logs, screenshots, JSON samples).
+- [ ] Record demo video.
+- [ ] Prepare submission ZIP.
 - Status: not-started
 - What to do: Zip the project source, `PROJECT_TRACKER_Lab4.md`, README, and demo video into `studentID(lastname)_Lab#4.zip` and submit.
 Short-term checklist (first work session)
