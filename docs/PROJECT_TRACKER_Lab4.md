@@ -228,7 +228,3 @@ dotnet lambda package --configuration Release --framework net8.0 --output-packag
 sam build
 sam deploy --guided
 ```
-
----
-
-If you'd like, I can now: add a CloudFormation/SAM template skeleton for the resources, or scaffold the Lambda handler signatures and IAM policies (I won't implement business logic unless you ask). Tell me which of those you'd like next.
