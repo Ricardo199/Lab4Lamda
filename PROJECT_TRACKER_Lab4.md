@@ -87,7 +87,6 @@ Acceptance criteria (met):
 
 Optional next steps (not required):
   - Add `[DynamoDBTable("ImageMetadataTable")]` and `[DynamoDBHashKey]` attributes if you plan to use `DynamoDBContext` directly.
-  - Remove the temporary `tools/serialize-test` project if you don't need it anymore.
 - Acceptance criteria (met): `models/Image.cs` exposes public properties and can be serialized to JSON and written to DynamoDB. If you make optional improvements, update this tracker to reflect them.
 
 4. Lambda for Labels (simple)
