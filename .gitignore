@@ -1,0 +1,34 @@
+# Build artifacts
+bin/
+obj/
+
+# Rider
+.idea/
+
+# Visual Studio
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Visual Studio Code
+.vscode/
+
+# Dotnet publish
+publish/
+
+# NuGet
+*.nupkg
+project.lock.json
+packages/
+
+# Logs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Tools/temp
+tools/serialize-test/

@@ -1,0 +1,11 @@
+using System;
+
+Console.WriteLine("Hello from 301397870(ricardo)_Lab#4");
+Console.WriteLine($"UTC Now: {DateTime.UtcNow:O}");
+
+// Simple sample function
+int Add(int a, int b) => a + b;
+Console.WriteLine($"Sample Add(2,3) = {Add(2,3)}");
+
+// Keep exit code 0
+return 0;
