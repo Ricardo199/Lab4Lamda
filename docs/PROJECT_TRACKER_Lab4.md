@@ -22,7 +22,10 @@ This tracker maps the lab rubric to concrete tasks, acceptance criteria, and sug
 1. Create DynamoDB Table (Console)
 
 - Status: completed
-- Notes: Table `ImageMetadataTable` was created in the AWS Console. Paste the table ARN here when available: __
+- Notes: Table `ImageMetadataTable` was created in the AWS Console.
+- AWS Account ID: `599473590430`
+- IAM User: `Lab4` (AdminAccess permissions)
+- S3 Bucket: `amzn-s3-images-lab-4-bucket` (created)
 - What I did: Created the table with partition key `ImageId` (String) and on-demand capacity.
 
 2. Simple Data Model
@@ -146,10 +149,12 @@ Optional next steps (not required):
 3. Implement and test the S3-triggered label-detection Lambda locally or in AWS (use sample images).
 
 Short-term checklist (first work session)
-Short-term checklist (first work session)
 - [x] Create DynamoDB table and record details.
 - [x] Update `models/Image.cs` with public properties.
+- [x] Create S3 bucket `amzn-s3-images-lab-4-bucket`.
+- [x] Create folder structure and placeholder docs (`docs/plan.md`, `docs/commands.txt`, `infra/template.yaml`, etc.).
 - [ ] Plan IAM role for label-detection Lambda.
+- [ ] Implement Lambda handler for label detection.
 
 ---
 

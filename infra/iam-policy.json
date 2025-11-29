@@ -9,12 +9,12 @@
     {
       "Effect": "Allow",
       "Action": ["s3:GetObject", "s3:PutObject"],
-      "Resource": ["arn:aws:s3:::YOUR_BUCKET/*"]
+      "Resource": ["arn:aws:s3:::amzn-s3-images-lab-4-bucket/*"]
     },
     {
       "Effect": "Allow",
       "Action": ["dynamodb:PutItem", "dynamodb:UpdateItem"],
-      "Resource": "arn:aws:dynamodb:REGION:ACCOUNT_ID:table/ImageMetadataTable"
+      "Resource": "arn:aws:dynamodb:*:599473590430:table/ImageMetadataTable"
     },
     {
       "Effect": "Allow",
