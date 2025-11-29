@@ -1,0 +1,3 @@
+# Deployment Commands and Output
+# Use: command |& tee -a docs/commands.txt
+

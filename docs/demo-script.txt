@@ -1,0 +1,14 @@
+# Demo Script (≤10 minutes)
+
+## Introduction
+<!-- Show AWS Console with account ID visible, camera on -->
+
+## Steps
+1. <!-- Show S3 bucket and upload sample image -->
+2. <!-- Show CloudWatch logs for Lambda execution -->
+3. <!-- Show DynamoDB table with new item -->
+4. <!-- Show thumbnail in S3 -->
+5. <!-- Show PROJECT_TRACKER_Lab4.md and docs/ folder -->
+
+## Closing
+<!-- Mention completed requirements and artifacts -->

@@ -1,0 +1,19 @@
+# SAM/CloudFormation Template for Lab 4
+# Use: sam build && sam deploy --guided
+
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Lab 4 - Image Label Detection and Thumbnail Generation
+
+Parameters:
+  # Add parameters like ConfidenceThreshold, TableName, etc.
+
+Resources:
+  # S3 Bucket
+  # DynamoDB Table (ImageMetadataTable)
+  # Lambda Function(s)
+  # IAM Role(s)
+  # Step Functions State Machine (optional)
+
+Outputs:
+  # Bucket name, table name, Lambda ARN, etc.
