@@ -134,24 +134,18 @@ Optional next steps (not required):
 
 7. Deploy Lambda and Configure Trigger
 
-- Status: not-started
-- What to do (choose one method):
-  
-  **Method A: AWS Console (Recommended for demo)**
-  1. Create IAM Role `Lab4LambdaExecutionRole` using `infra/iam-policy.json`
-  2. Create Lambda function `ImageProcessingFunction` (.NET 8 runtime)
-  3. Upload `artifacts/lambda.zip`
-  4. Set handler: `ImageProcessingLambda::ImageProcessingLambda.Function::FunctionHandler`
-  5. Add environment variables: IMAGE_TABLE, CONF_THRESHOLD, THUMB_PREFIX
-  6. Set timeout: 60s, memory: 512MB
-  7. Add S3 trigger for bucket `amzn-s3-images-lab-4-bucket`
-  
-  **Method B: SAM Deploy**
-  ```bash
-  cd infra
-  sam build
-  sam deploy --guided
-  ```
+- Status: completed
+- What was done:
+  - Lambda function `ImageProcessingFunction` deployed successfully using `dotnet lambda deploy-function`
+  - **Latest deployment: 2025-11-30T20:27:08 UTC**
+  - Code includes thumbnail exclusion fix (prevents infinite loop)
+  - Function ARN: `arn:aws:lambda:us-east-1:599473590430:function:ImageProcessingFunction`
+  - Runtime: dotnet8
+  - Handler: `ImageProcessingLambda::ImageProcessingLambda.Function::FunctionHandler`
+  - Memory: 512MB, Timeout: 60s
+  - S3 trigger configured for bucket `amzn-s3-images-lab-4-bucket`
+  - Environment variables: IMAGE_TABLE, CONF_THRESHOLD, THUMB_PREFIX
+- Deployment method used: AWS Lambda Tools for .NET (`dotnet lambda deploy-function`)
 
 7. (Optional) Skip Step Functions for now
 
