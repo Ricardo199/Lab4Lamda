@@ -28,7 +28,6 @@ Lambda Function (ImageProcessingFunction)
 - ✅ **Automatic Label Detection**: Uses AWS Rekognition to identify objects, scenes, and activities with 90%+ confidence
 - ✅ **Thumbnail Generation**: Creates 150px thumbnails automatically on image upload
 - ✅ **Metadata Storage**: Stores image URLs, labels, confidence scores, and timestamps in DynamoDB
-- ✅ **Infinite Loop Prevention**: Skips processing thumbnails to prevent recursive triggers
 - ✅ **Serverless Architecture**: No servers to manage, scales automatically
 
 ## Project Structure
