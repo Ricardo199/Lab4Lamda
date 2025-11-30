@@ -1,7 +1,7 @@
 # Lab 4 - AWS Image Processing Pipeline
 
 **Student:** Ricardo Burgos (301397870)  
-**Course:** Cloud Computing Lab  
+**Course:** API Engineering & Cloud Comp  
 **Date:** November 2025
 
 ## Overview
@@ -166,7 +166,9 @@ Test results: **1 original image → 1 thumbnail → 1 DynamoDB entry**
 
 ## License
 
-This project is for educational purposes as part of a Cloud Computing Lab course.
+This project is licensed under the [GNU General Public License v3.0](https://github.com/Ricardo199/Lab4Lamda?tab=GPL-3.0-1-ov-file).
+
+Created for educational purposes as part of the API Engineering & Cloud Comp course.
 
 ## Author
 
