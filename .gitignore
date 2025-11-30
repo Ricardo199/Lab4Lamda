@@ -1,6 +1,7 @@
 # Build artifacts
 bin/
 obj/
+artifacts/
 
 # Rider
 .idea/
@@ -25,19 +26,35 @@ packages/
 
 # Logs
 *.log
+docs/logs/
 
 # Environment variables and secrets
 .env
 .env.local
 *.env
+load-env.sh
+
+# AWS
+.aws/
 
 # OS files
 .DS_Store
 Thumbs.db
 
 # Tools/temp
-tools/serialize-test/
+tools/
+*.swp
+*.swo
+*~
+.tmp/
+tmp/
+
+# Test/scratch files
+items_to_delete.json
+test-event.json
+
+# Project tracking (internal use)
 docs/PROJECT_TRACKER_Lab4.md
 
-# Test images
-docs/samples
+# Test images (optional - remove this line if you want to include samples)
+# docs/samples/
