@@ -10,7 +10,6 @@ This project implements a serverless image processing pipeline on AWS that autom
 - Detects labels in uploaded images using Amazon Rekognition
 - Generates thumbnails (150px max dimension)
 - Stores metadata in DynamoDB
-- Prevents infinite processing loops
 
 ## Architecture
 
@@ -98,12 +97,12 @@ aws lambda add-permission \
   --source-arn arn:aws:s3:::amzn-s3-images-lab-4-bucket \
   --region us-east-1
 
-# Configure S3 notification
+# Configure S3 notification (replace <account-id> with your AWS account ID)
 aws s3api put-bucket-notification-configuration \
   --bucket amzn-s3-images-lab-4-bucket \
   --notification-configuration '{
     "LambdaFunctionConfigurations": [{
-      "LambdaFunctionArn": "arn:aws:lambda:us-east-1:599473590430:function:ImageProcessingFunction",
+      "LambdaFunctionArn": "arn:aws:lambda:us-east-1:<account-id>:function:ImageProcessingFunction",
       "Events": ["s3:ObjectCreated:*"]
     }]
   }' \
@@ -162,9 +161,8 @@ The project has been successfully tested with:
 - ✅ Label detection with 90%+ confidence threshold
 - ✅ Thumbnail generation (150px max dimension)
 - ✅ DynamoDB metadata storage
-- ✅ Infinite loop prevention (thumbnails are not re-processed)
 
-Test results: **1 original image → 1 thumbnail → 1 DynamoDB entry** (no duplicates)
+Test results: **1 original image → 1 thumbnail → 1 DynamoDB entry**
 
 ## License
 
