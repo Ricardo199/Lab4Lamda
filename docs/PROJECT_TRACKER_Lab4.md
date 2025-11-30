@@ -152,15 +152,21 @@ Optional next steps (not required):
 - Status: not-started
 8. Test End-to-End
 
-- Status: not-started
-- What to do: 
-  1. Package Lambda: `dotnet lambda package --output-package artifacts/lambda.zip`
-  2. Deploy using SAM (`sam build && sam deploy --guided`) OR manually via Console
-  3. Upload a sample image to S3 bucket
-  4. Confirm Lambda executed (CloudWatch Logs)
-  5. Verify DynamoDB item created with `DetectedLabels` (confidence >= 90%)
-  6. Verify thumbnail present under `thumbnails/` prefix in S3
-  7. Save all artifacts (logs, screenshots, JSON samples) to `docs/`
+- Status: completed ✅
+- What was done:
+  1. ✅ Configured S3 trigger for Lambda function
+  2. ✅ Uploaded test image: `samples/El-Tunco-Surf.jpg` → `s3://amzn-s3-images-lab-4-bucket/test-clean.jpg`
+  3. ✅ Lambda executed successfully (2025-11-30T21:23:27 UTC)
+  4. ✅ DynamoDB item created with detected labels (confidence >= 90%)
+  5. ✅ Thumbnail generated: `thumbnails/thumb-test-clean.jpg` (7,083 bytes)
+  6. ✅ **Infinite loop PREVENTED**: Second execution correctly skipped thumbnail ("Skipping thumbnail image: thumbnails/thumb-test-clean.jpg")
+  7. ✅ Final result: 1 original image + 1 thumbnail + 1 DynamoDB item (no duplicates!)
+- Test Results:
+  - Original image: `test-clean.jpg` (194,571 bytes)
+  - Thumbnail: `thumbnails/thumb-test-clean.jpg` (7,083 bytes, 150px max dimension)
+  - DynamoDB Count: 1 item
+  - Lambda executions: 2 (1st processed image, 2nd skipped thumbnail correctly)
+- Next: Capture screenshots for demo and prepare submission
 
 9. Prepare Demo and Screenshots
 
@@ -180,9 +186,10 @@ Short-term checklist (first work session)
 - [x] Create IAM policy document (`infra/iam-policy.json`).
 - [x] Create SAM template for deployment (`infra/template.yaml`).
 - [x] Package Lambda function (`artifacts/lambda.zip` created successfully).
-- [ ] Deploy Lambda to AWS (Console or SAM).
-- [ ] Configure S3 trigger on Lambda.
-- [ ] Test end-to-end with sample image.
+- [x] Deploy Lambda to AWS (deployed and updated).
+- [x] Configure S3 trigger on Lambda (configured via AWS CLI).
+- [x] Fix infinite loop issue (thumbnails/ folder exclusion working).
+- [x] Test end-to-end with sample image (successful - 1 image, 1 thumbnail, 1 DB item).
 - [ ] Collect artifacts (CloudWatch logs, DynamoDB item screenshot, thumbnail screenshot).
 - [ ] Record demo video (≤10 minutes).
 - [ ] Capture account deletion screenshot.

@@ -1,0 +1,121 @@
+{
+    "Items": [
+        {
+            "S3Key": {
+                "S": "test-clean.jpg"
+            },
+            "Timestamp": {
+                "N": "1764537807759"
+            },
+            "ImageName": {
+                "S": "96529d1e-77ae-4aee-9bcc-086c9a87ec2a"
+            },
+            "DetectedLabels": {
+                "L": [
+                    {
+                        "M": {
+                            "Confidence": {
+                                "N": "100"
+                            },
+                            "Name": {
+                                "S": "Nature"
+                            }
+                        }
+                    },
+                    {
+                        "M": {
+                            "Confidence": {
+                                "N": "100"
+                            },
+                            "Name": {
+                                "S": "Outdoors"
+                            }
+                        }
+                    },
+                    {
+                        "M": {
+                            "Confidence": {
+                                "N": "100"
+                            },
+                            "Name": {
+                                "S": "Sea"
+                            }
+                        }
+                    },
+                    {
+                        "M": {
+                            "Confidence": {
+                                "N": "100"
+                            },
+                            "Name": {
+                                "S": "Water"
+                            }
+                        }
+                    },
+                    {
+                        "M": {
+                            "Confidence": {
+                                "N": "99.99870300292969"
+                            },
+                            "Name": {
+                                "S": "Coast"
+                            }
+                        }
+                    },
+                    {
+                        "M": {
+                            "Confidence": {
+                                "N": "99.99870300292969"
+                            },
+                            "Name": {
+                                "S": "Shoreline"
+                            }
+                        }
+                    },
+                    {
+                        "M": {
+                            "Confidence": {
+                                "N": "95.96037292480469"
+                            },
+                            "Name": {
+                                "S": "Aerial View"
+                            }
+                        }
+                    },
+                    {
+                        "M": {
+                            "Confidence": {
+                                "N": "95.26050567626953"
+                            },
+                            "Name": {
+                                "S": "Pool"
+                            }
+                        }
+                    },
+                    {
+                        "M": {
+                            "Confidence": {
+                                "N": "95.26050567626953"
+                            },
+                            "Name": {
+                                "S": "Swimming Pool"
+                            }
+                        }
+                    }
+                ]
+            },
+            "ThumbNailUrl": {
+                "S": "s3://amzn-s3-images-lab-4-bucket/thumbnails/thumb-test-clean.jpg"
+            },
+            "S3Bucket": {
+                "S": "amzn-s3-images-lab-4-bucket"
+            },
+            "ObjectUrl": {
+                "S": "s3://amzn-s3-images-lab-4-bucket/test-clean.jpg"
+            }
+        }
+    ],
+    "Count": 1,
+    "ScannedCount": 1,
+    "ConsumedCapacity": null
+}
