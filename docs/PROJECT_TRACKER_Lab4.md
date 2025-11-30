@@ -98,6 +98,7 @@ Optional next steps (not required):
   - Created Lambda project at `src/ImageProcessingLambda`
   - Implemented `Function.cs` with FunctionHandler that:
     - Parses S3Event to get bucket and key
+    - **Skips processing if image is in `thumbnails/` folder (prevents infinite loop)**
     - Downloads image from S3
     - Calls Rekognition DetectLabels with 90% confidence threshold
     - Filters labels >= 90% confidence
@@ -111,6 +112,7 @@ Optional next steps (not required):
   - Lambda builds without errors
   - Package created: `artifacts/lambda.zip`
   - Handler signature correct: `ImageProcessingLambda::ImageProcessingLambda.Function::FunctionHandler`
+  - Lambda correctly excludes thumbnail images from processing
 
 5. Thumbnail (simpler option)
 
