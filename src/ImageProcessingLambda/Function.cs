@@ -27,11 +27,19 @@ namespace ImageProcessingLambda
         {
             try
             {
+                var s3Key = evnt.Records[0].S3.Object.Key;
+
+                if(s3Key.StartsWith("thumbnails/"))
+                {
+                    context.Logger.LogLine($"Skipping thumbnail image: {s3Key}");
+                    return;
+                }
                 var image = new _301397870_ricardo_Lab4.models.Image();
                 image.S3Bucket = evnt.Records[0].S3.Bucket.Name;
                 image.S3Key = evnt.Records[0].S3.Object.Key;
                 image.ImageId = Guid.NewGuid().ToString();
-                image.UploadTimestamp = DateTime.UtcNow.ToString("o");
+                var timestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+                image.UploadTimestamp = DateTimeOffset.FromUnixTimeMilliseconds(timestamp).ToString("o");
                 image.ObjectUrl = $"s3://{image.S3Bucket}/{image.S3Key}";
 
                 context.Logger.LogLine($"Processing image: {image.S3Key}");
@@ -102,12 +110,12 @@ namespace ImageProcessingLambda
                 // Write to DynamoDB
                 var item = new Dictionary<string, AttributeValue>
                 {
-                    ["ImageId"] = new AttributeValue { S = image.ImageId },
+                    ["ImageName"] = new AttributeValue { S = image.ImageId },
+                    ["Timestamp"] = new AttributeValue { N = timestamp.ToString() },
                     ["ObjectUrl"] = new AttributeValue { S = image.ObjectUrl },
                     ["S3Bucket"] = new AttributeValue { S = image.S3Bucket },
                     ["S3Key"] = new AttributeValue { S = image.S3Key },
                     ["ThumbNailUrl"] = new AttributeValue { S = image.ThumbNailUrl },
-                    ["UploadTimestamp"] = new AttributeValue { S = image.UploadTimestamp },
                     ["DetectedLabels"] = new AttributeValue
                     {
                         L = image.DetectedLabels.Select(l => new AttributeValue
