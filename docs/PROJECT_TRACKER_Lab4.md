@@ -182,6 +182,62 @@ Optional next steps (not required):
   - All screenshots are high quality, clearly show account ID, and demonstrate working functionality
   - Screenshots saved to `docs/screenshots/`
 - Next: Record demo video
+
+---
+
+## ⚠️ CRITICAL ISSUE DISCOVERED (Dec 2, 2025)
+
+**Current implementation does NOT meet lab requirements!**
+
+### Missing Requirements:
+
+1. **❌ AWS Step Functions NOT implemented**
+   - Requirement: "serverless application using AWS Step Functions must be implemented in C#"
+   - Current: Using only Lambda (no Step Functions state machine)
+
+2. **❌ Parallel Execution NOT implemented**
+   - Requirement: "detect labels" and "generate thumbnail" should run in **parallel**
+   - Current: Sequential execution in single Lambda function
+
+3. **❌ Multiple Image Upload Handling NOT supported**
+   - Requirement: Demo must show processing multiple images uploaded at once
+   - Current: Code only processes `evnt.Records[0]` (first image only)
+
+4. **❌ File Type Filtering NOT implemented**
+   - Requirement: "Uploaded files contain no image file => state machine should not be triggered"
+   - Current: Processes any S3 object (no file type validation)
+
+### Required Architecture Change:
+
+```
+S3 Upload (multiple files)
+    ↓
+Lambda: S3EventProcessor (filter file types, fan-out to Step Functions)
+    ├─→ Step Functions State Machine (one execution per image)
+        ├─→ Parallel State:
+        │   ├─→ Lambda: DetectLabels
+        │   └─→ Lambda: GenerateThumbnail
+        └─→ Lambda: StoreMetadata (DynamoDB)
+```
+
+### Tasks to Complete Full Requirements:
+
+10. **Refactor to Step Functions Architecture** (not-started)
+    - Create 4 separate Lambda functions:
+      - `S3EventProcessor`: Filter images (.jpg, .png, .jpeg), start Step Functions executions
+      - `DetectLabelsFunction`: Call Rekognition (parallel task 1)
+      - `GenerateThumbnailFunction`: Create thumbnail (parallel task 2)
+      - `StoreMetadataFunction`: Write to DynamoDB (after parallel tasks)
+    - Create Step Functions state machine with parallel state
+    - Deploy all functions and state machine
+    - Configure S3 trigger to invoke S3EventProcessor
+
+11. **Update Demo Video Requirements** (not-started)
+    - Scenario 1: Upload non-image files → no state machine execution
+    - Scenario 2: Upload single image → state machine processes it
+    - Scenario 3: Upload multiple images → multiple state machine executions
+
+---
 Short-term checklist (first work session)
 - [x] Create DynamoDB table and record details.
 - [x] Update `models/Image.cs` with public properties.
@@ -196,7 +252,12 @@ Short-term checklist (first work session)
 - [x] Fix infinite loop issue (thumbnails/ folder exclusion working).
 - [x] Test end-to-end with sample image (successful - 1 image, 1 thumbnail, 1 DB item).
 - [x] Collect artifacts (6 professional screenshots captured and saved).
-- [ ] Record demo video (≤10 minutes).
+- [ ] **REFACTOR: Implement Step Functions architecture (CRITICAL - required by lab)**
+- [ ] **REFACTOR: Split into 4 Lambda functions (S3EventProcessor, DetectLabels, GenerateThumbnail, StoreMetadata)**
+- [ ] **REFACTOR: Implement parallel execution (DetectLabels + GenerateThumbnail)**
+- [ ] **REFACTOR: Add file type filtering (.jpg, .png, .jpeg only)**
+- [ ] **REFACTOR: Handle multiple image uploads (process all, not just first)**
+- [ ] Record demo video (≤10 minutes) showing 3 scenarios.
 - [ ] Prepare submission ZIP: `301397870(Burgos)_Lab#4.zip`.
 
 ---
